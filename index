@@ -1,1 +1,404 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Схема Аллахвердова и многозначные изображения</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
+      --text-2xl: clamp(2rem, 1.2rem + 2.5vw, 3.5rem);
+      --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+      --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem;
+      --space-12: 3rem; --space-16: 4rem; --space-20: 5rem;
+      --color-bg: #f7f6f2;
+      --color-surface: #fbfbf9;
+      --color-surface-2: #f1eee8;
+      --color-surface-offset: #e8e4dd;
+      --color-border: #d4d1ca;
+      --color-divider: #dcd9d5;
+      --color-text: #28251d;
+      --color-text-muted: #6f6c66;
+      --color-text-faint: #9f9c95;
+      --color-primary: #01696f;
+      --color-primary-soft: #dbe9e7;
+      --color-secondary: #7a39bb;
+      --color-secondary-soft: #e8dbf6;
+      --color-warning: #964219;
+      --color-warning-soft: #ecd9cd;
+      --color-success: #437a22;
+      --color-success-soft: #dce8d3;
+      --radius-sm: 0.375rem; --radius-md: 0.75rem; --radius-lg: 1rem; --radius-xl: 1.5rem;
+      --shadow-sm: 0 1px 2px rgba(40,37,29,.06);
+      --shadow-md: 0 8px 24px rgba(40,37,29,.08);
+      --shadow-lg: 0 20px 48px rgba(40,37,29,.12);
+      --font-display: 'Source Serif 4', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+    }
+    [data-theme="dark"] {
+      --color-bg: #171614;
+      --color-surface: #1e1c19;
+      --color-surface-2: #25231f;
+      --color-surface-offset: #2d2a25;
+      --color-border: #3a3732;
+      --color-divider: #302d29;
+      --color-text: #e4e0d7;
+      --color-text-muted: #b4aea4;
+      --color-text-faint: #7f7a72;
+      --color-primary: #68aeb4;
+      --color-primary-soft: #23393b;
+      --color-secondary: #c29bf0;
+      --color-secondary-soft: #31253f;
+      --color-warning: #d28b64;
+      --color-warning-soft: #3b2b24;
+      --color-success: #91c16f;
+      --color-success-soft: #293823;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.2);
+      --shadow-md: 0 8px 24px rgba(0,0,0,.3);
+      --shadow-lg: 0 20px 48px rgba(0,0,0,.42);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      min-height:100dvh;
+      font-family:var(--font-body);
+      font-size:var(--text-base);
+      line-height:1.6;
+      background:
+        radial-gradient(circle at top left, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 28%),
+        radial-gradient(circle at top right, color-mix(in srgb, var(--color-secondary) 8%, transparent), transparent 24%),
+        var(--color-bg);
+      color:var(--color-text);
+    }
+    .page{max-width:1400px;margin:0 auto;padding:var(--space-6)}
+    .skip{position:absolute;left:-9999px}
+    .skip:focus{left:var(--space-4);top:var(--space-4);background:var(--color-surface);padding:var(--space-3);z-index:10}
+    .topbar{
+      display:flex;justify-content:space-between;align-items:center;gap:var(--space-4);
+      padding:var(--space-4) 0 var(--space-8) 0;flex-wrap:wrap;
+    }
+    .brand{display:flex;align-items:center;gap:var(--space-3)}
+    .logo{
+      width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--color-primary),color-mix(in srgb, var(--color-primary) 45%, var(--color-secondary)));
+      display:grid;place-items:center;color:white;box-shadow:var(--shadow-md);flex:none;
+    }
+    .brand svg{width:24px;height:24px}
+    .brand h1{font-family:var(--font-display);font-size:var(--text-lg);line-height:1.1}
+    .actions{display:flex;gap:var(--space-3);align-items:center;flex-wrap:wrap}
+    .chip{font-size:var(--text-xs);padding:0.45rem 0.7rem;border:1px solid color-mix(in srgb, var(--color-text) 12%, transparent);border-radius:999px;color:var(--color-text-muted);background:color-mix(in srgb, var(--color-surface) 88%, transparent)}
+    .toggle{min-width:44px;min-height:44px;border-radius:999px;border:1px solid color-mix(in srgb, var(--color-text) 12%, transparent);background:var(--color-surface);display:grid;place-items:center;box-shadow:var(--shadow-sm)}
+    .hero{
+      display:grid;grid-template-columns:1.15fr .85fr;gap:var(--space-8);align-items:start;
+      margin-bottom:var(--space-10);
+    }
+    .hero-card,.legend,.notes,.scheme-wrap{
+      background:color-mix(in srgb, var(--color-surface) 92%, transparent);
+      border:1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+      border-radius:var(--radius-xl);box-shadow:var(--shadow-md);
+      backdrop-filter: blur(8px);
+    }
+    .hero-card{padding:var(--space-8)}
+    .hero-kicker{font-size:var(--text-xs);letter-spacing:.12em;text-transform:uppercase;color:var(--color-primary);font-weight:700;margin-bottom:var(--space-4)}
+    .hero h2{font-family:var(--font-display);font-size:var(--text-2xl);line-height:1.02;max-width:12ch;margin-bottom:var(--space-4)}
+    .hero p{max-width:64ch;color:var(--color-text-muted)}
+    .summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4);padding:var(--space-6)}
+    .mini{
+      border-radius:var(--radius-lg);padding:var(--space-5);background:var(--color-surface-2);
+      border:1px solid color-mix(in srgb, var(--color-text) 10%, transparent)
+    }
+    .mini strong{display:block;font-size:var(--text-sm);margin-bottom:.35rem}
+    .mini span{font-size:var(--text-xs);color:var(--color-text-muted)}
 
+    .scheme-wrap{padding:var(--space-6);overflow:auto}
+    .scheme-header{display:flex;justify-content:space-between;align-items:end;gap:var(--space-4);margin-bottom:var(--space-6);flex-wrap:wrap}
+    .scheme-header h3{font-family:var(--font-display);font-size:var(--text-xl);line-height:1.05}
+    .scheme-header p{max-width:72ch;color:var(--color-text-muted)}
+
+    .scheme{min-width:1180px;padding:var(--space-6) var(--space-4) var(--space-8);}
+    .flow-row{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--space-4);align-items:start;position:relative}
+    .node{
+      position:relative;padding:var(--space-5);border-radius:var(--radius-lg);min-height:220px;
+      border:1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+      box-shadow:var(--shadow-sm);
+    }
+    .node h4{font-size:var(--text-lg);line-height:1.15;margin-bottom:var(--space-3)}
+    .node p{font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-3)}
+    .node ul{padding-left:1.1rem;display:grid;gap:.45rem;color:var(--color-text);font-size:var(--text-sm)}
+    .node li::marker{color:var(--color-primary)}
+    .node-sensory{background:linear-gradient(180deg,var(--color-primary-soft),color-mix(in srgb, var(--color-surface) 70%, var(--color-primary-soft)))}
+    .node-unconscious{background:linear-gradient(180deg,var(--color-secondary-soft),color-mix(in srgb, var(--color-surface) 72%, var(--color-secondary-soft)))}
+    .node-conscious{background:linear-gradient(180deg,var(--color-warning-soft),color-mix(in srgb, var(--color-surface) 72%, var(--color-warning-soft)))}
+    .node-feedback{background:linear-gradient(180deg,color-mix(in srgb, var(--color-success) 18%, var(--color-surface)),color-mix(in srgb, var(--color-surface) 78%, var(--color-success-soft)))}
+    .node-switch{background:linear-gradient(180deg,color-mix(in srgb, var(--color-surface-offset) 78%, white),var(--color-surface))}
+    .eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--color-text-muted);margin-bottom:var(--space-3)}
+
+    .arrow-row{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);margin:var(--space-3) 0 var(--space-6)}
+    .arrow{display:flex;align-items:center;justify-content:center;gap:var(--space-2);color:var(--color-text-muted);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.08em}
+    .arrow svg{width:100%;height:20px;overflow:visible}
+
+    .branches{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-5);margin-top:var(--space-6)}
+    .branch{border-radius:var(--radius-lg);padding:var(--space-5);border:1px solid color-mix(in srgb, var(--color-text) 10%, transparent);position:relative;background:var(--color-surface-2)}
+    .branch h5{font-size:var(--text-base);margin-bottom:var(--space-3)}
+    .branch.good{background:linear-gradient(180deg,color-mix(in srgb, var(--color-success) 12%, var(--color-surface)),var(--color-surface-2))}
+    .branch.bad{background:linear-gradient(180deg,color-mix(in srgb, var(--color-warning) 10%, var(--color-surface)),var(--color-surface-2))}
+    .branch p{font-size:var(--text-sm);color:var(--color-text-muted);max-width:48ch}
+    .branch .tag{display:inline-flex;margin-top:var(--space-3);font-size:var(--text-xs);padding:.35rem .6rem;border-radius:999px}
+    .good .tag{background:var(--color-success-soft);color:var(--color-success)}
+    .bad .tag{background:var(--color-warning-soft);color:var(--color-warning)}
+
+    .feedback-loop{
+      margin-top:var(--space-6);display:grid;grid-template-columns:1.15fr .85fr;gap:var(--space-5);align-items:start;
+    }
+    .memory,.question{
+      border-radius:var(--radius-lg);padding:var(--space-5);background:var(--color-surface-2);
+      border:1px solid color-mix(in srgb, var(--color-text) 10%, transparent)
+    }
+    .memory h5,.question h5{font-size:var(--text-base);margin-bottom:var(--space-2)}
+    .memory p,.question p{font-size:var(--text-sm);color:var(--color-text-muted)}
+    .memory .memory-line{margin-top:var(--space-4);display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-xs);color:var(--color-text-muted)}
+    .memory .memory-line svg{width:90px;height:24px;overflow:visible}
+
+    .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6);margin-top:var(--space-8)}
+    .legend,.notes{padding:var(--space-6)}
+    .legend h3,.notes h3{font-family:var(--font-display);font-size:var(--text-xl);margin-bottom:var(--space-4)}
+    .legend-list{display:grid;gap:var(--space-4)}
+    .legend-item{display:grid;grid-template-columns:auto 1fr;gap:var(--space-3);align-items:start}
+    .swatch{width:18px;height:18px;border-radius:6px;margin-top:.25rem;border:1px solid color-mix(in srgb, var(--color-text) 10%, transparent)}
+    .legend-item strong{display:block;font-size:var(--text-sm);margin-bottom:.15rem}
+    .legend-item span{font-size:var(--text-sm);color:var(--color-text-muted)}
+    .notes ol{display:grid;gap:var(--space-4);padding-left:1.2rem}
+    .notes li{padding-left:.35rem}
+    .notes li::marker{font-weight:700;color:var(--color-primary)}
+    .notes p{font-size:var(--text-sm);color:var(--color-text-muted)}
+    .footer-note{margin-top:var(--space-8);padding-top:var(--space-4);border-top:1px solid var(--color-divider);font-size:var(--text-xs);color:var(--color-text-faint)}
+
+    @media (max-width: 980px){
+      .hero,.feedback-loop,.bottom-grid{grid-template-columns:1fr}
+      .summary-grid{grid-template-columns:1fr}
+      .page{padding:var(--space-4)}
+      .hero-card,.legend,.notes,.scheme-wrap{padding:var(--space-5)}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#scheme">Перейти к схеме</a>
+  <div class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 8.5C5 6.57 6.57 5 8.5 5H15.5C17.43 5 19 6.57 19 8.5V15.5C19 17.43 17.43 19 15.5 19H8.5C6.57 19 5 17.43 5 15.5V8.5Z" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M8 12H16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M12 8V16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1>Аллахвердов × многозначные изображения</h1>
+          <div class="chip">схема для научной дискуссии</div>
+        </div>
+      </div>
+      <div class="actions">
+        <span class="chip">Long &amp; Toppino: bottom-up / top-down</span>
+        <button class="toggle" data-theme-toggle aria-label="Переключить тему">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-card">
+        <div class="hero-kicker">Интегративная логика</div>
+        <h2>Сознание не строит перцепт с нуля, а выбирает и проверяет один из бессознательно подготовленных вариантов.</h2>
+        <p>Эта схема переводит эффекты многозначных изображений в язык Аллахвердова: сенсорные и интерпретационные процессы работают в когнитивном бессознательном, а сознание выступает как инстанция отбора, проверки согласованности и возможного запуска переключения.</p>
+      </div>
+      <div class="hero-card summary-grid" aria-label="Краткие опорные тезисы">
+        <div class="mini">
+          <strong>Bottom-up</strong>
+          <span>локальные признаки, адаптация, конкуренция сенсорных каналов</span>
+        </div>
+        <div class="mini">
+          <strong>Когнитивное бессознательное</strong>
+          <span>готовит несколько интерпретаций одного и того же стимула</span>
+        </div>
+        <div class="mini">
+          <strong>Сознание</strong>
+          <span>выбирает один перцепт и удерживает его как актуально осознаваемый</span>
+        </div>
+        <div class="mini">
+          <strong>Обратная связь</strong>
+          <span>оценивает, насколько выбранный перцепт согласован с контекстом</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="scheme" class="scheme-wrap">
+      <div class="scheme-header">
+        <div>
+          <h3>Схема работы системы</h3>
+          <p>Читать слева направо: от двусмысленного сенсорного входа к бессознательной генерации вариантов, затем к сознательному выбору, проверке согласованности и двум исходам — стабилизации или переключению.</p>
+        </div>
+        <div class="chip">Главная идея: множественность бессознательных интерпретаций + единичность осознаваемого перцепта</div>
+      </div>
+
+      <div class="scheme">
+        <div class="flow-row">
+          <article class="node node-sensory">
+            <div class="eyebrow">Шаг 1</div>
+            <h4>Сенсорный вход</h4>
+            <p>Двусмысленный стимул поступает в зрительную систему и распадается на набор локальных признаков.</p>
+            <ul>
+              <li>контуры, ориентации, глубинные подсказки</li>
+              <li>локальная адаптация каналов</li>
+              <li>разные части сигнала поддерживают разные варианты</li>
+            </ul>
+          </article>
+
+          <article class="node node-unconscious">
+            <div class="eyebrow">Шаг 2</div>
+            <h4>Когнитивное бессознательное</h4>
+            <p>Бессознательные механизмы строят несколько конкурирующих интерпретаций одного и того же изображения.</p>
+            <ul>
+              <li>Percept A / Percept B / ...</li>
+              <li>работают обучение, прайминг, прошлый опыт</li>
+              <li>альтернативы существуют параллельно, но ещё не осознаны</li>
+            </ul>
+          </article>
+
+          <article class="node node-conscious">
+            <div class="eyebrow">Шаг 3</div>
+            <h4>Сознательный выбор</h4>
+            <p>Сознание выбирает один вариант как текущий осознаваемый перцепт и делает его феноменально наличным.</p>
+            <ul>
+              <li>выбор, а не конструирование с нуля</li>
+              <li>влияют задача, установка, знание о двусмысленности</li>
+              <li>остальные варианты остаются в фоне</li>
+            </ul>
+          </article>
+
+          <article class="node node-feedback">
+            <div class="eyebrow">Шаг 4</div>
+            <h4>Проверка согласованности</h4>
+            <p>Сознание получает обратную связь: насколько выбранный перцепт согласован с внешним и внутренним контекстом.</p>
+            <ul>
+              <li>внешний контекст: стимул, сцена, поведенческая уместность</li>
+              <li>внутренний контекст: ожидания, цели, смысловые установки</li>
+              <li>итог: «удерживать» или «искать альтернативу»</li>
+            </ul>
+          </article>
+
+          <article class="node node-switch">
+            <div class="eyebrow">Шаг 5</div>
+            <h4>Регуляция динамики</h4>
+            <p>Если поддержка текущего варианта падает, альтернативный перцепт получает шанс выйти в сознание.</p>
+            <ul>
+              <li>сенсорная адаптация ослабляет активную интерпретацию</li>
+              <li>контекст может перестать закреплять выбранный вариант</li>
+              <li>происходит реверсия: A → B</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="arrow-row" aria-hidden="true">
+          <div class="arrow"><svg viewBox="0 0 220 20"><path d="M4 10H214" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M205 4L214 10L205 16" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="arrow"><svg viewBox="0 0 220 20"><path d="M4 10H214" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M205 4L214 10L205 16" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="arrow"><svg viewBox="0 0 220 20"><path d="M4 10H214" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M205 4L214 10L205 16" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="arrow"><svg viewBox="0 0 220 20"><path d="M4 10H214" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M205 4L214 10L205 16" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        </div>
+
+        <div class="branches">
+          <section class="branch good">
+            <h5>Если согласованность высокая</h5>
+            <p>Контекст подтверждает текущий перцепт, сознание продолжает его удерживать, а конкурирующие варианты остаются в фоне. Это путь к стабилизации восприятия.</p>
+            <div class="tag">Стабильный перцепт</div>
+          </section>
+          <section class="branch bad">
+            <h5>Если согласованность слабая или недифференцированная</h5>
+            <p>Ни один вариант не получает прочного подтверждения. Тогда адаптация и внутренняя конкуренция ведут к чередованию интерпретаций — возникает мультистабильность и реверсии.</p>
+            <div class="tag">Постоянные переключения</div>
+          </section>
+        </div>
+
+        <div class="feedback-loop">
+          <section class="memory">
+            <h5>Имплицитная перцептивная память</h5>
+            <p>Последний устойчивый перцепт сохраняется как предпочтительный шаблон и влияет на следующий акт выбора. Поэтому после прерывания предъявления система часто возвращается к прежнему варианту, а не начинает «с нуля».</p>
+            <div class="memory-line">
+              <span>устойчивый перцепт</span>
+              <svg viewBox="0 0 100 24" aria-hidden="true"><path d="M4 12H90" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M81 5L90 12L81 19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span>входит в фон выбора</span>
+            </div>
+          </section>
+          <section class="question">
+            <h5>Ключевая интерпретация для дискуссии</h5>
+            <p>Не отсутствие обратной связи само по себе, а отсутствие дифференцирующего критерия согласованности делает систему реверсивной: контекст как будто говорит, что оба варианта допустимы.</p>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="bottom-grid">
+      <section class="legend">
+        <h3>Как читать цвета</h3>
+        <div class="legend-list">
+          <div class="legend-item">
+            <div class="swatch" style="background:var(--color-primary-soft)"></div>
+            <div><strong>Сенсорный уровень</strong><span>Низовые зрительные процессы: признаки, локальная адаптация, первичная организация сигнала.</span></div>
+          </div>
+          <div class="legend-item">
+            <div class="swatch" style="background:var(--color-secondary-soft)"></div>
+            <div><strong>Когнитивное бессознательное</strong><span>Генерация и конкуренция нескольких интерпретаций; здесь bottom-up и часть learned top-down эффектов уже интегрированы.</span></div>
+          </div>
+          <div class="legend-item">
+            <div class="swatch" style="background:var(--color-warning-soft)"></div>
+            <div><strong>Сознание</strong><span>Выбор одного актуального перцепта, его удержание и возможное переключение.</span></div>
+          </div>
+          <div class="legend-item">
+            <div class="swatch" style="background:var(--color-success-soft)"></div>
+            <div><strong>Контур обратной связи</strong><span>Проверка того, насколько выбранный вариант согласован с задачей, ожиданиями и контекстом.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="notes">
+        <h3>Что можно проговорить устно</h3>
+        <ol>
+          <li><p>Bottom-up эффекты статьи можно трактовать как работу сенсорного и бессознательного уровней, где подготавливаются альтернативы.</p></li>
+          <li><p>Top-down эффекты — это не просто «влияние сверху», а именно сознательный отбор и регуляция того, какой из вариантов допускается к осознанию.</p></li>
+          <li><p>Реверсия возникает тогда, когда текущий перцепт перестаёт получать достаточно подтверждения, а конкурирующий вариант усиливается.</p></li>
+          <li><p>Если контекст поддерживает один вариант, система стабилизируется; если не различает варианты, начинается колебание между ними.</p></li>
+        </ol>
+      </section>
+    </section>
+
+    <p class="footer-note">Страница сделана как визуальная опора для обсуждения статьи Long &amp; Toppino через понятийный аппарат В.М. Аллахвердова.</p>
+  </div>
+
+  <script>
+    (function(){
+      const btn = document.querySelector('[data-theme-toggle]');
+      const root = document.documentElement;
+      let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.setAttribute('data-theme', theme);
+      const render = () => {
+        btn.innerHTML = theme === 'dark'
+          ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>'
+          : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+        btn.setAttribute('aria-label', theme === 'dark' ? 'Переключить на светлую тему' : 'Переключить на тёмную тему');
+      };
+      render();
+      btn.addEventListener('click', () => {
+        theme = theme === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', theme);
+        render();
+      });
+    })();
+  </script>
+</body>
+</html>
